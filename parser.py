@@ -1,5 +1,6 @@
 import pdfquery
 
+
 class ACCS_Menu_Parser():
 
     def __init__(self, filename):
@@ -15,7 +16,7 @@ class ACCS_Menu_Parser():
 
         # Box width and height
         self.width = 136
-        self.height = 71 
+        self.height = 71
 
         self.days = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"]
         self.dish_names = ["I", "II", "III", "salad", "special"]
@@ -29,11 +30,13 @@ class ACCS_Menu_Parser():
 
     def init_pdf(self):
         self.pdf = pdfquery.PDFQuery(self.filename)
-        self.pdf.load(0) 
+        self.pdf.load(0)
+        # Debugging
+        self.pdf.tree.write("dump.xml", pretty_print=True)
 
     def get_pos(self, i, j):
         x0 = self.offset_x + i * self.width
-        y0 = self.offset_y - j * self.height 
+        y0 = self.offset_y - j * self.height
         x1 = x0 + self.width
         y1 = y0 + self.height
         return x0, y0, x1, y1
@@ -56,7 +59,7 @@ class ACCS_Menu_Parser():
             for j, dish_name in enumerate(self.dish_names):
                 x0, y0, x1, y1 = self.get_pos(i, j)
                 key = self.get_key(day, dish_name)
-                statement = (key, self.bbox.format(x0,y0,x1,y1))
+                statement = (key, self.bbox.format(x0, y0, x1, y1))
                 statements.append(statement)
 
         self.menu = self.pdf.extract(statements)
@@ -65,4 +68,4 @@ class ACCS_Menu_Parser():
         for day in self.days:
             print day
             for dish_name in self.dish_names:
-               print self.menu[self.get_key(day, dish_name)] 
+                print self.menu[self.get_key(day, dish_name)]
